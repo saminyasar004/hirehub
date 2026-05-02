@@ -1,6 +1,6 @@
 import "colors";
 import { Context, Hono } from "hono";
-import { dbMiddleware } from "../middlewares/db";
+import { dbMiddleware } from "../middlewares/db.middleware";
 import { formatError, formatResponse } from "../lib/auth.lib";
 import { authRouter } from "../routes/auth.route";
 
