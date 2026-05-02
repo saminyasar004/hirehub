@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output = "../generated/prisma"
   engineType = "binary"
 }
 
@@ -20,29 +21,6 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  info UserInfo?
 
   @@map("users")
-}
-
-model UserInfo {
-  id        Int     @id @default(autoincrement())
-  userId    Int     @unique
-  user      User    @relation(fields: [userId], references: [id])
-
-  firstName String?
-  lastName  String?
-  phone     String?
-  avatar    String?
-  bio       String?
-  resume    String?
-  github    String?
-  linkedin  String?
-  website   String?
-  address   String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  @@map("user_info")
 }
