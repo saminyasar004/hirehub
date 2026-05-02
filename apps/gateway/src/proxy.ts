@@ -7,8 +7,6 @@ export const proxyRequest = async (targetUrl: string, c: Context) => {
 
 		console.log("Forward URL ", forwardUrl);
 
-		const headers = new Headers(c.req.raw.headers);
-
 		const hasBody = c.req.method !== "GET" && c.req.method !== "HEAD";
 
 		const response = await fetch(forwardUrl, {

@@ -6,4 +6,4 @@ export const SERVICE_URLS = {
 };
 
 // requests to these routes skip JWT verification
-export const PUBLIC_ROUTES = ["/auth/register", "/auth/login", "/jobs", "/auth/health"];
+export const PUBLIC_ROUTES = ["/auth/register", "/auth/login", "/jobs"];

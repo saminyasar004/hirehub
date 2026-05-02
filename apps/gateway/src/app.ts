@@ -9,10 +9,12 @@ app.use("*", authMiddleware);
 
 // route to correct service based on prefix
 app.all("/auth/*", (c) => proxyRequest(SERVICE_URLS.auth, c));
-app.all("/users/*", (c) => proxyRequest(SERVICE_URLS.users, c));
-app.all("/jobs/*", (c) => proxyRequest(SERVICE_URLS.jobs, c));
-app.all("/applications/*", (c) => proxyRequest(SERVICE_URLS.applications, c));
+app.all("/user/*", (c) => proxyRequest(SERVICE_URLS.users, c));
+app.all("/job/*", (c) => proxyRequest(SERVICE_URLS.jobs, c));
+app.all("/application/*", (c) => proxyRequest(SERVICE_URLS.applications, c));
 
-app.notFound((c) => c.json({ message: "Route not found" }, 404));
+app.notFound((c) =>
+	c.json({ status: 404, message: "Route not foundddd" }, 404),
+);
 
 export default app;
