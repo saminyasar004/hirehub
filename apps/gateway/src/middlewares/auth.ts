@@ -21,9 +21,6 @@ export const authMiddleware = createMiddleware(
 			headers: { Authorization: `Bearer ${token}` },
 		}).then((res) => res.json());
 
-		console.log("VERIFY...");
-		console.log(await verifyRes);
-
 		if (verifyRes.status !== 200)
 			return c.json(
 				{
@@ -32,9 +29,6 @@ export const authMiddleware = createMiddleware(
 				},
 				401,
 			);
-
-		console.log("USER ");
-		console.log(verifyRes);
 
 		// inject user info into headers for downstream services
 		c.req.raw.headers.set("X-User-Id", verifyRes.userId);

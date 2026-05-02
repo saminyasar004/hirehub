@@ -12,19 +12,12 @@ export const getAllUsersController = async (c: Context, next: Next) => {
 			await fetch("http://localhost:4001/auth/")
 		).json();
 
-		console.log("HEERE INSIDE USER CONTROLLER TO CHECK USER IN REQ: ");
-
-		console.log(getAllUsersResponse);
-		console.log(userInfos);
-
 		const combinedUsers = userInfos.map((userInfo: UserInfo) => {
 			const user = getAllUsersResponse?.users.find(
 				(user: any) => user.id === userInfo.userId,
 			);
 			return { ...userInfo, ...user };
 		});
-
-		console.log(combinedUsers);
 
 		return formatResponse(c, 200, "Users fetched successfully.", {
 			users: combinedUsers,
