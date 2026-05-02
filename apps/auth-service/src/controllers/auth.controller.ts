@@ -8,6 +8,9 @@ import {
 	verifyToken,
 } from "../lib/auth.lib";
 import { AuthJwtPayload } from "../types";
+import { publishEvent } from "../events/publisher";
+import { User } from "../../generated/prisma";
+import jwt from "jsonwebtoken";
 
 export const verifyAuthController = async (c: Context, next: Next) => {
 	try {
@@ -20,16 +23,18 @@ export const verifyAuthController = async (c: Context, next: Next) => {
 		if (!token) {
 			return formatResponse(c, 401, "Unauthorized: Invalid token format");
 		}
-
 		const verify = verifyToken(token) as AuthJwtPayload;
-
 		if (!verify) {
 			return formatResponse(c, 401, "Unauthorized");
 		}
 
-		c.set("user", verify);
-		await next();
+		return formatResponse(c, 200, "Authorized", verify);
 	} catch (err: any) {
+		if (err instanceof jwt.JsonWebTokenError) {
+			return formatResponse(c, 401, "Unauthorized: Invalid token.");
+		} else if (err instanceof jwt.TokenExpiredError) {
+			return formatResponse(c, 401, "Unauthorized: Token expired.");
+		}
 		formatError(err, "Auth controller verify");
 		return formatResponse(c, 500, "Internal server error!");
 	}
@@ -55,7 +60,9 @@ export const registerController = async (c: Context, next: Next) => {
 
 		const prisma = c.get("prisma");
 
-		const isEmailExist = await prisma.user.findUnique({ where: { email } });
+		const isEmailExist = await prisma.user.findUnique({
+			where: { email },
+		});
 
 		if (isEmailExist) {
 			return formatResponse(c, 400, "Email already exists");
@@ -68,24 +75,22 @@ export const registerController = async (c: Context, next: Next) => {
 				email,
 				password: hashedPassword,
 				role: body.role || "candidate",
-				info: {
-					create: {
-						firstName,
-						lastName,
-						phone,
-						avatar,
-						bio,
-						resume,
-						github,
-						linkedin,
-						website,
-						address,
-					},
-				},
 			},
-			include: {
-				info: true,
-			},
+		});
+
+		await publishEvent("user.registered", {
+			userId: createdUser.id,
+			role: createdUser.role,
+			firstName,
+			lastName,
+			bio,
+			address,
+			resume,
+			avatar,
+			phone,
+			github,
+			linkedin,
+			website,
 		});
 
 		const accessToken = generateToken(
@@ -169,5 +174,24 @@ export const loginController = async (c: Context, next: Next) => {
 	} catch (err: any) {
 		formatError(err, "Auth controller login");
 		return formatResponse(c, 500, "Internal server error!");
+	}
+};
+
+export const getAllUsersController = async (c: Context, next: Next) => {
+	try {
+		const prisma = c.get("prisma");
+		const users = await prisma.user.findMany();
+
+		const simplifiedUsers = users.map((user: User) => {
+			const { password, id, email, role } = user;
+			return { id, email, role };
+		});
+
+		return formatResponse(c, 200, "Users fetched successfully.", {
+			users: simplifiedUsers,
+		});
+	} catch (err: any) {
+		formatError(err, "Get all users controller.");
+		return formatResponse(c, 500, "Internal server error.");
 	}
 };

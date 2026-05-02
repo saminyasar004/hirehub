@@ -8,9 +8,9 @@ const authApp = new Hono();
 
 authApp.use("*", dbMiddleware);
 
-authApp.route("/auth", authRouter);
+authApp.route("/auth/", authRouter);
 
-authApp.get("/auth/health", (c: Context) => {
+authApp.get("/health", (c: Context) => {
 	return formatResponse(c, 200, "Auth service is running!");
 });
 

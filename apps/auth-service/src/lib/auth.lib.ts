@@ -2,11 +2,12 @@ import { Context } from "hono";
 import { StatusCode } from "hono/utils/http-status";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import { AuthJwtPayload } from "../types";
 
-export const formatError = (err: Error, source: string): string => {
-	return `Error occured at ${source}\nError name: ${err.name}\nError message: ${err.message}\nError Stack: ${err.stack}\n`
-		.red;
+export const formatError = (err: Error, source: string) => {
+	console.log(
+		`Error occured at ${source}\nError name: ${err.name}\nError message: ${err.message}\nError Stack: ${err.stack}\n`
+			.red,
+	);
 };
 
 export const formatResponse = (
