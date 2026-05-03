@@ -1,0 +1,96 @@
+services:
+    - type: web
+      name: hirehub-gateway
+      runtime: node
+      rootDir: apps/gateway
+      buildCommand: cd ../.. && yarn install && cd apps/gateway && yarn build
+      startCommand: node dist/index.js
+      envVars:
+          - key: PORT
+            value: 4000
+          - key: AUTH_SERVICE_URL
+            sync: false
+          - key: USER_SERVICE_URL
+            sync: false
+          - key: JOB_SERVICE_URL
+            sync: false
+          - key: APPLICATION_SERVICE_URL
+            sync: false
+
+    - type: web
+      name: hirehub-auth-service
+      runtime: node
+      rootDir: apps/auth-service
+      buildCommand: cd ../.. && yarn install && cd apps/auth-service && npx prisma generate && yarn build
+      startCommand: node dist/index.js
+      envVars:
+          - key: PORT
+            value: 4001
+          - key: DATABASE_URL
+            sync: false
+          - key: JWT_SECRET
+            sync: false
+          - key: REDIS_HOST
+            sync: false
+          - key: REDIS_PORT
+            sync: false
+          - key: REDIS_PASSWORD
+            sync: false
+
+    - type: web
+      name: hirehub-user-service
+      runtime: node
+      rootDir: apps/user-service
+      buildCommand: cd ../.. && yarn install && cd apps/user-service && npx prisma generate && yarn build
+      startCommand: node dist/index.js
+      envVars:
+          - key: PORT
+            value: 4002
+          - key: DATABASE_URL
+            sync: false
+          - key: REDIS_HOST
+            sync: false
+          - key: REDIS_PORT
+            sync: false
+          - key: REDIS_PASSWORD
+            sync: false
+
+    - type: web
+      name: hirehub-job-service
+      runtime: node
+      rootDir: apps/job-service
+      buildCommand: cd ../.. && yarn install && cd apps/job-service && npx prisma generate && yarn build
+      startCommand: node dist/index.js
+      envVars:
+          - key: PORT
+            value: 4003
+          - key: DATABASE_URL
+            sync: false
+
+    - type: web
+      name: hirehub-application-service
+      runtime: node
+      rootDir: apps/application-service
+      buildCommand: cd ../.. && yarn install && cd apps/application-service && npx prisma generate && yarn build
+      startCommand: node dist/index.js
+      envVars:
+          - key: PORT
+            value: 4004
+          - key: DATABASE_URL
+            sync: false
+
+    - type: web
+      name: hirehub-notification-service
+      runtime: node
+      rootDir: apps/notification-service
+      buildCommand: cd ../.. && yarn install && cd apps/notification-service && yarn build
+      startCommand: node dist/index.js
+      envVars:
+          - key: PORT
+            value: 4005
+          - key: REDIS_HOST
+            sync: false
+          - key: REDIS_PORT
+            sync: false
+          - key: REDIS_PASSWORD
+            sync: false
