@@ -10,6 +10,7 @@
 		"db:generate": "prisma generate",
 		"db:push": "prisma db push",
 		"db:migrate": "prisma migrate dev",
+		"check-types": "npx tsc --noEmit",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
 	"keywords": [],
